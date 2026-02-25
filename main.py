@@ -15,7 +15,7 @@ from datetime import datetime, timezone
 from typing import Dict, List, Optional, Pattern, Set, Tuple
 from urllib.parse import urlparse
 
-APP_NAME = "system-log-to-docker"
+APP_NAME = "syslog2dockerlog"
 DEFAULT_CONFIG_PATH = f"/etc/{APP_NAME}/{APP_NAME}.config"
 HEALTH_FILE = os.environ.get("HEALTH_FILE", f"/run/{APP_NAME}/health.json")
 

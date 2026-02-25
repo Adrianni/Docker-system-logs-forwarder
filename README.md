@@ -1,6 +1,6 @@
-# system-log-to-docker
+# syslog2dockerlog
 
-`system-log-to-docker` is a Python-based Docker utility that reads host system logs (through mounted files) and presents them as container stdout/stderr.
+`syslog2dockerlog` is a Python-based Docker utility that reads host system logs (through mounted files) and presents them as container stdout/stderr.
 
 This makes host logs visible through:
 
@@ -21,9 +21,9 @@ This makes host logs visible through:
 
 Configuration file inside the container:
 
-`/etc/system-log-to-docker/system-log-to-docker.config`
+`/etc/syslog2dockerlog/syslog2dockerlog.config`
 
-Example (`config/system-log-to-docker.config`):
+Example (`config/syslog2dockerlog.config`):
 
 ```ini
 [General]
@@ -34,7 +34,7 @@ updatefreq=5s
 url=https://ntfy.sh
 topic=your-topic
 auth_token=
-title_prefix=system-log-to-docker
+title_prefix=syslog2dockerlog
 
 [Syslog]
 input=/var/log/syslog*
@@ -84,15 +84,15 @@ It also logs a notification summary, including:
 
 ```yaml
 services:
-  system-log-to-docker:
-    image: ghcr.io/your-org/system-log-to-docker:latest
-    container_name: system-log-to-docker
+  syslog2dockerlog:
+    image: ghcr.io/your-org/syslog2dockerlog:latest
+    container_name: syslog2dockerlog
     volumes:
       - /var/log:/var/log:ro
-      - ./config/system-log-to-docker.config:/etc/system-log-to-docker/system-log-to-docker.config:ro
+      - ./config/syslog2dockerlog.config:/etc/syslog2dockerlog/syslog2dockerlog.config:ro
     environment:
       - HEALTH_MAX_AGE_SECONDS=180
-      - HEALTH_FILE=/run/system-log-to-docker/health.json
+      - HEALTH_FILE=/run/syslog2dockerlog/health.json
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "python", "/app/healthcheck.py"]
@@ -105,9 +105,9 @@ services:
 ## Build and run
 
 ```bash
-docker build -t system-log-to-docker .
+docker build -t syslog2dockerlog .
 docker run --rm \
   -v /var/log:/var/log:ro \
-  -v $(pwd)/config/system-log-to-docker.config:/etc/system-log-to-docker/system-log-to-docker.config:ro \
-  system-log-to-docker
+  -v $(pwd)/config/syslog2dockerlog.config:/etc/syslog2dockerlog/syslog2dockerlog.config:ro \
+  syslog2dockerlog
 ```
