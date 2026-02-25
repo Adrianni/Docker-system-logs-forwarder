@@ -1,13 +1,13 @@
 services:
-  system-log-to-docker:
+  syslog2dockerlog:
     build: .
-    container_name: system-log-to-docker
+    container_name: syslog2dockerlog
     volumes:
       - /var/log:/var/log:ro
-      - ./config/system-log-to-docker.config:/etc/system-log-to-docker/system-log-to-docker.config:ro
+      - ./config/syslog2dockerlog.config:/etc/syslog2dockerlog/syslog2dockerlog.config:ro
     environment:
       - HEALTH_MAX_AGE_SECONDS=180
-      - HEALTH_FILE=/run/system-log-to-docker/health.json
+      - HEALTH_FILE=/run/syslog2dockerlog/health.json
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "python", "/app/healthcheck.py"]
