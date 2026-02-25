@@ -1,0 +1,71 @@
+# Publisering til GHCR (ghcr.io)
+
+Denne repoen har nå en workflow i `.github/workflows/publish-ghcr.yml` som bygger og publiserer Docker-image til GitHub Container Registry (`ghcr.io`).
+
+## Hva trigger publisering
+
+Workflowen kjører ved:
+
+- push til `main`
+- push av tag (`v*` eller `X.Y.Z`)
+- publisert GitHub Release
+- manuell kjøring via `workflow_dispatch`
+
+## Førstegangsoppsett
+
+1. Sørg for at workflow-permissions tillater `packages: write` i repo-innstillinger (Actions).
+2. Ingen ekstra secret er nødvendig for publisering i samme repo/owner; workflowen bruker `secrets.GITHUB_TOKEN`.
+3. Image-navn blir automatisk:
+   - `ghcr.io/<owner>/<repo>`
+
+## Tagger som publiseres
+
+Workflowen bruker `docker/metadata-action` og lager blant annet:
+
+- branch-tag (f.eks. `main`)
+- git-tag (f.eks. `v1.2.3`)
+- semver (`1.2.3` og `1.2` når tag matcher semver)
+- kort SHA
+- `latest` (kun fra default branch)
+
+## Hvordan publisere
+
+### A) Push til main
+
+```bash
+git push origin main
+```
+
+Publiserer oppdatert image med bl.a. `main`, kort SHA og `latest`.
+
+### B) Versjonsrelease med tag
+
+```bash
+git tag v1.0.0
+git push origin v1.0.0
+```
+
+Publiserer versjonstagger til GHCR.
+
+### C) Via GitHub Release
+
+Opprett en ny Release i GitHub UI (Published) for å trigge ny publisering.
+
+## Verifisering
+
+Etter kjøring finner du imaget her:
+
+- `https://github.com/<owner>/<repo>/pkgs/container/<repo>`
+
+Eksempel pull:
+
+```bash
+docker pull ghcr.io/<owner>/<repo>:latest
+```
+
+## Lokal test av image
+
+```bash
+docker build -t ghcr.io/<owner>/<repo>:local-test .
+docker run --rm ghcr.io/<owner>/<repo>:local-test
+```
